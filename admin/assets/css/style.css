@@ -1,0 +1,189 @@
+/* =====================================================
+   Skylux Electronics Admin - style.css
+   Author: Dantech Developers
+   Year: 2025
+===================================================== */
+
+/* ===============================
+   BODY & BASE
+================================ */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+}
+
+/* ===============================
+   SIDEBAR
+================================ */
+.sidebar {
+    width: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #343a40;
+    color: #fff;
+    padding-top: 20px;
+    z-index: 1000;
+}
+
+.sidebar a {
+    display: block;
+    color: #fff;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background-color: #495057;
+    color: #fff;
+    border-radius: 5px;
+}
+
+/* ===============================
+   MAIN CONTENT
+================================ */
+.main-content {
+    margin-left: 220px;
+    padding: 20px;
+}
+
+/* ===============================
+   TOP NAVBAR
+================================ */
+.navbar {
+    margin-left: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
+   DASHBOARD CARDS
+================================ */
+.card {
+    border-radius: 10px;
+    transition: 0.3s;
+    padding: 20px;
+    text-align: center;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card h5 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card p.fs-3 {
+    font-weight: bold;
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* ===============================
+   TABLES
+================================ */
+table {
+    background-color: #fff;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th {
+    background-color: #343a40;
+    color: #fff;
+    font-weight: 500;
+}
+
+table td,
+table th {
+    vertical-align: middle !important;
+    padding: 12px;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.btn {
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ===============================
+   FLASH MESSAGES
+================================ */
+.alert {
+    border-radius: 8px;
+    padding: 12px 20px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .navbar {
+        margin-left: 0;
+    }
+}
+
+/* ===============================
+   ADDITIONAL ELEMENTS
+================================ */
+/* Active sidebar indicator */
+.sidebar a.active::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 100%;
+    background-color: #0d6efd;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+
+/* Card footer / small text */
+.card small {
+    color: #6c757d;
+}
+
+/* Scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}

@@ -1,84 +1,83 @@
 <?php
-include 'includes/header.php';
-include 'includes/db.php';
-include 'includes/functions.php';
-session_start();
+require_once "includes/functions.php";
+include "includes/header.php";
 
-$message_sent = false;
+// Handle form submission
+if (isset($_POST['contact_submit'])) {
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $subject = trim($_POST['subject']);
+    $message = trim($_POST['message']);
 
-// Handle contact form submission
-if(isset($_POST['send_message'])){
-    $name = sanitize($_POST['name'], $conn);
-    $email = sanitize($_POST['email'], $conn);
-    $subject = sanitize($_POST['subject'], $conn);
-    $message = sanitize($_POST['message'], $conn);
+    // Basic validation
+    if ($name && $email && $subject && $message) {
+        // Send email (use PHP mail or configure SMTP)
+        $to = "info@skylux.com"; // Replace with your email
+        $headers = "From: $name <$email>\r\n";
+        $body = "Name: $name\nEmail: $email\n\n$message";
 
-    $stmt = $conn->prepare("INSERT INTO contacts (name, email, subject, message, created_at) VALUES (?, ?, ?, ?, NOW())");
-    $stmt->bind_param("ssss", $name, $email, $subject, $message);
-    if($stmt->execute()){
-        $message_sent = true;
+        if (mail($to, $subject, $body, $headers)) {
+            setFlash('contact', 'Thank you! Your message has been sent.');
+        } else {
+            setFlash('contact', 'Oops! Something went wrong. Please try again.', 'danger');
+        }
+        redirect('contact.php');
+    } else {
+        setFlash('contact', 'Please fill in all fields.', 'danger');
+        redirect('contact.php');
     }
-    $stmt->close();
 }
 ?>
 
 <div class="container my-5">
-    <h2 class="text-3xl font-bold mb-5 text-center text-gray-800">Contact Us</h2>
+    <h2 class="mb-4">📞 Contact Us</h2>
 
-    <?php if($message_sent): ?>
-    <div class="alert alert-success text-center">Your message has been sent. We'll get back to you soon!</div>
-    <?php endif; ?>
+    <?php flash('contact'); ?>
 
-    <div class="row g-4">
+    <div class="row">
         <!-- Contact Form -->
         <div class="col-md-6">
-            <div class="p-4 border rounded shadow-sm bg-white">
-                <form method="POST" action="contact.php">
-                    <div class="mb-3">
-                        <label class="form-label font-semibold">Full Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label font-semibold">Email Address</label>
-                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label font-semibold">Subject</label>
-                        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label font-semibold">Message</label>
-                        <textarea name="message" rows="6" class="form-control" placeholder="Write your message..."
-                            required></textarea>
-                    </div>
-                    <button type="submit" name="send_message"
-                        class="btn btn-primary w-full hover:bg-blue-600 transition">Send Message</button>
-                </form>
-            </div>
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" name="contact_submit" class="btn btn-primary">
+                    ✉️ Send Message
+                </button>
+            </form>
         </div>
 
-        <!-- Contact Info & Map -->
+        <!-- Contact Details -->
         <div class="col-md-6">
-            <div class="p-4 border rounded shadow-sm bg-white">
-                <h5 class="text-xl font-bold mb-3">Our Contact Info</h5>
-                <p><strong>Phone:</strong> 0712 328 150</p>
-                <p><strong>Mpesa Till No:</strong> 5148677</p>
-                <p><strong>Location:</strong> Muthetheni, Kenya</p>
-                <p><strong>WhatsApp:</strong> <a href="https://wa.me/254712328150"
-                        class="text-green-600 font-semibold hover:underline">Chat with us</a></p>
+            <h5>Our Contact Details</h5>
+            <p>📍 Address: 123 Skylux Street, Nairobi, Kenya</p>
+            <p>📧 Email: info@skylux.com</p>
+            <p>📞 Phone: +254 712 328 150</p>
+            <p>🌐 Website: www.skylux.com</p>
 
-
-                <h5 class="text-xl font-bold mt-4 mb-2">Chat with us</h5>
-                <div class="flex gap-3">
-                    <a href="https://wa.me/254712328150" target="_blank"
-                        class="inline-flex items-center justify-center w-12 h-12 bg-green-500 rounded-full hover:bg-green-600 transition">
-                        <i class="fab fa-whatsapp text-white text-2xl"></i>
-                    </a>
-
-                </div>
-            </div>
+            <!-- WhatsApp Button -->
+            <a href="https://wa.me/254712328150" target="_blank" class="btn btn-success mt-3">
+                💬 WhatsApp Us
+            </a>
         </div>
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include "includes/footer.php"; ?>

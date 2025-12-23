@@ -1,46 +1,39 @@
 <?php
-include 'includes/db.php';
-include 'includes/header.php';
+require_once "includes/db.php";
 
-if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header('Location: shop.php');
-    exit();
+// Create products table if it doesn't exist
+$tableSql = "
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    stock INT DEFAULT 0,
+    image VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+";
+
+if ($conn->query($tableSql) === TRUE) {
+    echo "✅ Table 'products' is ready.<br>";
+} else {
+    die("❌ Error creating table: " . $conn->error);
 }
 
-$id = sanitize($_GET['id'], $conn);
-$sql = "SELECT * FROM products WHERE id='$id'";
-$result = $conn->query($sql);
+// Sample products to insert
+$sampleProducts = [
+    ['Smartphone X1', 19999.00, 10, 'smartphone1.jpg'],
+    ['Laptop Pro 15"', 54999.00, 5, 'laptop1.jpg'],
+    ['Wireless Earbuds', 4999.00, 20, 'earbuds1.jpg'],
+    ['Smartwatch S3', 8999.00, 15, 'smartwatch1.jpg'],
+    ['Gaming Mouse', 2999.00, 25, 'mouse1.jpg'],
+    ['Bluetooth Speaker', 3999.00, 12, 'speaker1.jpg'],
+];
 
-if($result->num_rows == 0) {
-    echo '<div class="container mt-5"><p>Product not found.</p></div>';
-    include 'includes/footer.php';
-    exit();
+// Insert sample products
+foreach ($sampleProducts as $p) {
+    $stmt = $conn->prepare("INSERT INTO products (name, price, stock, image) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sdis", $p[0], $p[1], $p[2], $p[3]);
+    $stmt->execute();
 }
 
-$product = $result->fetch_assoc();
-?>
-
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6">
-            <img src="uploads/products/<?php echo $product['image']; ?>" class="img-fluid"
-                alt="<?php echo $product['name']; ?>">
-        </div>
-        <div class="col-md-6">
-            <h2><?php echo $product['name']; ?></h2>
-            <p><?php echo $product['description']; ?></p>
-            <p class="fw-bold">KES <?php echo number_format($product['price'],2); ?></p>
-
-            <form method="POST" action="cart.php">
-                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                <div class="mb-3">
-                    <label>Quantity</label>
-                    <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:100px;">
-                </div>
-                <button type="submit" name="add_to_cart" class="btn btn-success">Add to Cart</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<?php include 'includes/footer.php'; ?>
+echo "✅ Sample products inserted successfully!";
