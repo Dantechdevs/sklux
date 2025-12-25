@@ -1,57 +1,73 @@
 <?php
-require_once "../includes/db.php";
-require_once "../includes/functions.php";
-include "includes/header.php";
+require_once 'includes/header.php';
+require_once '../includes/db.php';
 
-// Fetch all users
-$users = $conn->query("SELECT * FROM users ORDER BY id DESC")->fetch_all(MYSQLI_ASSOC);
+// Fetch users
+$query = "SELECT * FROM users ORDER BY created_at DESC";
+$result = mysqli_query($conn, $query);
 ?>
 
-<h1 class="mb-4">👥 Users Management</h1>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Users</h2>
+        <a href="add-user.php" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Add User
+        </a>
+    </div>
 
-<div class="mb-3">
-    <a href="add_user.php" class="btn btn-success">
-        <i class="fas fa-plus"></i> Add New User
-    </a>
+    <div class="card shadow-sm">
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= $row['id']; ?></td>
+                                <td><?= htmlspecialchars($row['name']); ?></td>
+                                <td><?= htmlspecialchars($row['email']); ?></td>
+                                <td>
+                                    <?php if ($row['role'] === 'admin'): ?>
+                                        <span class="badge bg-danger">Admin</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary">User</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= date('M d, Y', strtotime($row['created_at'])); ?></td>
+                                <td class="text-end">
+                                    <a href="edit-user.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <?php if ($row['role'] !== 'admin'): ?>
+                                        <a href="delete-user.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Delete this user?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">
+                                No users found.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<?php if (!empty($users)): ?>
-    <table class="table table-bordered table-hover shadow-sm">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Created At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($users as $user): ?>
-                <tr>
-                    <td><?= e($user['id']); ?></td>
-                    <td><?= e($user['name']); ?></td>
-                    <td><?= e($user['email']); ?></td>
-                    <td><?= e($user['role']); ?></td>
-                    <td><?= e($user['created_at']); ?></td>
-                    <td>
-                        <a href="edit_user.php?id=<?= $user['id']; ?>" class="btn btn-sm btn-primary">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <a href="delete_user.php?id=<?= $user['id']; ?>" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Are you sure you want to delete this user?');">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php else: ?>
-    <div class="alert alert-info">
-        No users found.
-    </div>
-<?php endif; ?>
-
-<?php include "includes/footer.php"; ?>
+<?php require_once 'includes/footer.php'; ?>

@@ -26,6 +26,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             --sidebar-collapsed-width: 60px;
         }
 
+        body {
+            overflow-x: hidden;
+        }
+
         /* Top Navbar */
         .navbar {
             height: var(--nav-height);
@@ -38,7 +42,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             top: var(--nav-height);
             left: 0;
             bottom: 0;
-            /* Stretch to bottom */
             width: var(--sidebar-width);
             background-color: #2c343a;
             color: #fff;
@@ -92,6 +95,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             padding: 20px;
             padding-top: calc(var(--nav-height) + 20px);
             transition: margin-left 0.3s ease;
+            min-height: 100vh;
         }
 
         .sidebar.collapsed~.main-content {
@@ -145,73 +149,75 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <!-- TOP NAVBAR -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <!-- Mobile toggle -->
-            <button class="btn btn-outline-light d-md-none me-2" id="sidebarToggleMobile" aria-label="Toggle sidebar">
-                ☰
-            </button>
+            <button class="btn btn-outline-light d-md-none me-2" id="sidebarToggleMobile">☰</button>
 
-            <!-- Desktop collapse toggle -->
-            <button class="btn btn-outline-light d-none d-md-inline me-2" id="sidebarToggleDesktop"
-                aria-label="Collapse sidebar">
+            <button class="btn btn-outline-light d-none d-md-inline me-2" id="sidebarToggleDesktop">
                 <i class="fas fa-bars"></i>
             </button>
 
             <a class="navbar-brand" href="index.php">Skylux Admin</a>
 
-            <a href="logout.php" class="btn btn-outline-light btn-sm">
-                Logout
-            </a>
+            <a href="logout.php" class="btn btn-outline-light btn-sm">Logout</a>
         </div>
     </nav>
 
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-        <h4 class="text-center">Admin Panel</h4>
-        <a href="index.php" class="<?= $currentPage == 'index.php' ? 'active' : '' ?>"><i class="fas fa-home"></i><span>
-                Dashboard</span></a>
-        <a href="products.php" class="<?= $currentPage == 'products.php' ? 'active' : '' ?>"><i
-                class="fas fa-box"></i><span> Products</span></a>
-        <a href="orders.php" class="<?= $currentPage == 'orders.php' ? 'active' : '' ?>"><i
-                class="fas fa-shopping-cart"></i><span> Orders</span></a>
-        <a href="users.php" class="<?= $currentPage == 'users.php' ? 'active' : '' ?>"><i
-                class="fas fa-users"></i><span> Users</span></a>
-        <a href="settings.php" class="<?= $currentPage == 'settings.php' ? 'active' : '' ?>"><i
-                class="fas fa-cog"></i><span> Settings</span></a>
-        <a href="logout.php"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a>
+        <h4>Admin Panel</h4>
+
+        <a href="index.php" class="<?= $currentPage == 'index.php' ? 'active' : '' ?>">
+            <i class="fas fa-home"></i><span>Dashboard</span>
+        </a>
+
+        <a href="products.php" class="<?= $currentPage == 'products.php' ? 'active' : '' ?>">
+            <i class="fas fa-box"></i><span>Products</span>
+        </a>
+
+        <a href="orders.php" class="<?= $currentPage == 'orders.php' ? 'active' : '' ?>">
+            <i class="fas fa-shopping-cart"></i><span>Orders</span>
+        </a>
+
+        <a href="users.php" class="<?= $currentPage == 'users.php' ? 'active' : '' ?>">
+            <i class="fas fa-users"></i><span>Users</span>
+        </a>
+
+        <a href="settings.php" class="<?= $currentPage == 'settings.php' ? 'active' : '' ?>">
+            <i class="fas fa-cog"></i><span>Settings</span>
+        </a>
+
+        <a href="logout.php">
+            <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+        </a>
     </div>
 
-    <!-- SCROLL TO TOP BUTTON -->
-    <button id="scrollTopBtn" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+    <!-- SCROLL TO TOP -->
+    <button id="scrollTopBtn"><i class="fas fa-chevron-up"></i></button>
 
     <!-- MAIN CONTENT START -->
-    <div class="main-content"></div>
+    <div class="main-content">
 
-    <!-- JS -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const scrollBtn = document.getElementById('scrollTopBtn');
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const sidebar = document.getElementById('sidebar');
+                const scrollBtn = document.getElementById('scrollTopBtn');
 
-            // Mobile toggle
-            document.getElementById('sidebarToggleMobile').addEventListener('click', () => {
-                sidebar.classList.toggle('show');
-            });
+                document.getElementById('sidebarToggleMobile').onclick = () => {
+                    sidebar.classList.toggle('show');
+                };
 
-            // Desktop collapse toggle
-            document.getElementById('sidebarToggleDesktop').addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-            });
+                document.getElementById('sidebarToggleDesktop').onclick = () => {
+                    sidebar.classList.toggle('collapsed');
+                };
 
-            // Scroll-to-top button
-            window.addEventListener('scroll', () => {
-                scrollBtn.style.display = (window.scrollY > 100) ? 'block' : 'none';
-            });
-
-            scrollBtn.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
+                window.addEventListener('scroll', () => {
+                    scrollBtn.style.display = window.scrollY > 100 ? 'block' : 'none';
                 });
+
+                scrollBtn.onclick = () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                };
             });
-        });
-    </script>
+        </script>
