@@ -10,7 +10,7 @@ $result = mysqli_query($conn, $query);
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Users</h2>
-        <a href="add-user.php" class="btn btn-primary">
+        <a href="add_user.php" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Add User
         </a>
     </div>
